@@ -47,19 +47,26 @@ Constructor.
 | const TSCmdTbl *cmdTbl | pointer to TSCmdTbl that have list of command and function to run. |
 | byte len | length of command in TSCmdTbl that you make. |
 
+____
+
 ``` C++
 void run();
 ```
 
 Run All Command.
 
+____
+
 ``` C++
 byte available();
 ```
 To know how  much char of < PARAMETER > that save in buffer
+
 | Retrun | Description |
 | --- | --- |
 | byte x | length of char in buffer for < PARAMETER >. |
+
+____
 
 ``` C++
 void push(char x);
@@ -70,6 +77,8 @@ save a char to buffer.
 | --- | --- |
 | char x | char that save in buffer. |
 
+____
+
 ``` C++
 char pop();
 ```
@@ -78,3 +87,5 @@ pop of char in < PARAMETER >.
 | Retrun | Description |
 | --- | --- |
 | char x | pop the char for < PARAMETER > in buffer. |
+
+____

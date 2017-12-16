@@ -1,21 +1,20 @@
 #ifndef COMMAND_HANDLER_H
 #define COMMAND_HANDLER_H
 
-#include <Arduino.h>
-#include <Stream.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <avr/pgmspace.h>
 
 #undef __DEBUG__
 #include "Debug.h"
 
-#define STD_CMD		"ANU"
+#define STD_CMD			"AN"
 #define CHAR_CMD		5
 #define CMD_BUFFER		127
 
-typedef byte (*ptrExecuteFnc)(void);
-typedef void (*ptrRespondFnc)(byte);
+typedef unsigned char (*ptrExecuteFnc)(void);
+typedef void (*ptrRespondFnc)(unsigned char);
 
 typedef struct {
   const char cmdString[CHAR_CMD];
@@ -31,16 +30,16 @@ private:
 	const TSCmdTbl *ptrTSCommandTbl;
 	PGM_P * arrayCommand;
 	char Buffer[CMD_BUFFER];
-	byte (*PincommingFncHanddler)(void);
+	unsigned char (*PincommingFncHanddler)(void);
 	void (*errorFncHandler)(void);
-	byte poss_push,poss_pop, cmdNum;
+	unsigned char poss_push,poss_pop, cmdNum;
 	void flush(void);
 public:
-	CommandHandler(byte(*funcIn)(void), void (*error)(void),const TSCmdTbl *cmdTbl,byte len);
+	CommandHandler(unsigned char(*funcIn)(void), void (*error)(void),const TSCmdTbl *cmdTbl,unsigned char len);
 	void run();
 	void push(char);
 	char pop();
-	byte available();
+	unsigned char available();
 
 };
 

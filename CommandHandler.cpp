@@ -1,9 +1,9 @@
 #include "CommandHandler.h"
 
-CommandHandler::CommandHandler(byte(*funcIn)(void), 
+CommandHandler::CommandHandler(unsigned char(*funcIn)(void), 
 	void (*errorFnc)(void),
 	const TSCmdTbl *cmdTbl, 
-	byte len){
+	unsigned char len){
 
 	DBG_INIT(); // for debug
 	cmdNum = len;
@@ -12,13 +12,13 @@ CommandHandler::CommandHandler(byte(*funcIn)(void),
 	ptrTSCommandTbl = cmdTbl;
 	flush();
 }
-byte CommandHandler::available(){
+unsigned char CommandHandler::available(){
 	return poss_push - poss_pop;
 }
 void CommandHandler::flush(void){
 	poss_push =0;
 	poss_pop = 0;
-	for (byte i = 0; i < CMD_BUFFER; i++)
+	for (unsigned char i = 0; i < CMD_BUFFER; i++)
 	{
 		Buffer[i] = '\0';
 	}
@@ -37,8 +37,8 @@ char CommandHandler::pop(){
 void CommandHandler::run(){
 	char buff[CHAR_CMD];
 	// char* s ;
-	byte i =0;
-	boolean errorIndication = true;
+	unsigned char i =0;
+	bool errorIndication = true;
 	ptrExecuteFnc exe;
 	ptrRespondFnc rsp;
 	poss_pop = 0;

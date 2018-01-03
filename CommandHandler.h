@@ -7,7 +7,7 @@
 #include <string.h>
 #include <avr/pgmspace.h>
 
-#undef __DEBUG__
+#define __DEBUG__
 #include "Debug.h"
 
 #define STD_CMD		"ANU"
@@ -32,11 +32,11 @@ private:
 	PGM_P * arrayCommand;
 	char Buffer[CMD_BUFFER];
 	byte (*PincommingFncHanddler)(void);
-	void (*errorFncHandler)(void);
+	void (*errorFncHandler)(byte);
 	byte poss_push,poss_pop, cmdNum;
 	void flush(void);
 public:
-	CommandHandler(byte(*funcIn)(void), void (*error)(void),const TSCmdTbl *cmdTbl,byte len);
+	CommandHandler(byte(*funcIn)(void), void (*error)(byte),const TSCmdTbl *cmdTbl,byte len);
 	void run();
 	void push(char);
 	char pop();

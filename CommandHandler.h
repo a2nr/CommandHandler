@@ -7,13 +7,20 @@
 #include <string.h>
 #include <avr/pgmspace.h>
 
-#define __DEBUG__
+#undef __DEBUG__
 #include "Debug.h"
 
 #define STD_CMD		"ANU"
 #define CHAR_CMD		5
 #define CMD_BUFFER		127
 
+#ifdef __AVR__
+#define GET_FNC(y,x)	(y) pgm_read_word(&x)
+#define strcpy__(x,y)	strcpy_P(x,y)
+#else
+#define GET_FNC(y,x)	x
+#define strcpy__(x,y)	strcpy(x,y)
+#endif
 typedef byte (*ptrExecuteFnc)(void);
 typedef void (*ptrRespondFnc)(byte);
 

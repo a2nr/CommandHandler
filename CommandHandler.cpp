@@ -1,4 +1,5 @@
 #include "CommandHandler.h"
+#include "MemoryFree.h"
 
 CommandHandler::CommandHandler(byte(*funcIn)(void), 
 	void (*errorFnc)(byte),
@@ -18,6 +19,10 @@ byte CommandHandler::available(){
 void CommandHandler::flush(void){
 	poss_push =0;
 	poss_pop = 0;
+	DBG_FLASH_PRINT("Curent RAM- >");
+	DBG_PRINTLN(freeMemory());
+	DBG_FLASH_PRINT("Flushing- >");
+	DBG_PRINTLN(Buffer);
 	for (byte i = 0; i < CMD_BUFFER; i++)
 	{
 		Buffer[i] = '\0';
@@ -78,10 +83,10 @@ void CommandHandler::run(){
 			case STAGE_SEARCH:
 			{
 				char buff[CHAR_CMD];
-				ptrExecuteFnc exe = (ptrExecuteFnc)pgm_read_word(&ptrTSCommandTbl[i].pExecuteFnc);
-				ptrRespondFnc rsp = (ptrRespondFnc)pgm_read_word(&ptrTSCommandTbl[i].pRespondFnc);
+				ptrExecuteFnc exe = GET_FNC(ptrExecuteFnc, ptrTSCommandTbl[i].pExecuteFnc);
+				ptrRespondFnc rsp = GET_FNC(ptrRespondFnc, ptrTSCommandTbl[i].pRespondFnc);
 
-				strcpy_P(buff, &ptrTSCommandTbl[i].cmdString[0]);
+				strcpy__(buff, &ptrTSCommandTbl[i].cmdString[0]);
 				len_buff = strlen(buff);
 
 				if ( strncmp(&Buffer[len_std+1], buff,len_buff) != 0 ) {
@@ -103,7 +108,7 @@ void CommandHandler::run(){
 					rsp( exe() );
 					i=cmdNum;
 					DBG_FLASH_PRINTLN("...End");
-					
+					flush();
 					STAGE = STAGE_END;
 					break;
 				}

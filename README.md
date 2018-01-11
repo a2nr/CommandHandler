@@ -1,6 +1,7 @@
 CommandHandler
 ==============
-Handle Serial Command for AVR. Save the list command in FLASH (PROGMEM).
+Handle Serial Command for AVR.
+Depedencie : https://github.com/sudar/MemoryFree
 
 Format
 ======

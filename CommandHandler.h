@@ -8,47 +8,44 @@
 #include <avr/pgmspace.h>
 
 #undef __DEBUG__
-#include "Debug.h"
+#include "Debug.h"	
 
-#define STD_CMD		"ANU"
-#define CHAR_CMD		5
-#define CMD_BUFFER		127
 
-#ifdef __AVR__
-#define GET_FNC(y,x)	(y) pgm_read_word(&x)
-#define strcpy__(x,y)	strcpy_P(x,y)
-#else
-#define GET_FNC(y,x)	x
-#define strcpy__(x,y)	strcpy(x,y)
-#endif
-typedef byte (*ptrExecuteFnc)(void);
-typedef void (*ptrRespondFnc)(byte);
+#define STD_CMD		"AN"
 
-typedef struct {
-  const char cmdString[CHAR_CMD];
-  ptrExecuteFnc pExecuteFnc;
-  ptrRespondFnc pRespondFnc;
-}TSCmdTbl;
+class CommandContainer {
+	public:
+	const char * cmd;
+	CommandContainer(const char * c):cmd(c) {
 
+	}
+	virtual byte exe(void);
+	virtual void rsp(byte);
+};
+
+template <unsigned int sizeCmd, unsigned int lenHeader, unsigned int sizeBuff>
 class CommandHandler
 {
 private:
 	DBG_DECLARATION();
-
-	const TSCmdTbl *ptrTSCommandTbl;
-	PGM_P * arrayCommand;
-	char Buffer[CMD_BUFFER];
+	char Buffer[sizeBuff];
 	byte (*PincommingFncHanddler)(void);
 	void (*errorFncHandler)(byte);
-	byte poss_push,poss_pop, cmdNum;
+	CommandContainer *cc[sizeCmd];
+	byte poss_push,poss_pop;
 	void flush(void);
 public:
-	CommandHandler(byte(*funcIn)(void), void (*error)(byte),const TSCmdTbl *cmdTbl,byte len);
+	CommandHandler();
+	void attachSys(byte(*funcIn)(void), void (*error)(byte));
+	void registerCmd(CommandContainer *c[]);
+	unsigned int maxCommand(){return sizeBuff;}
 	void run();
 	void push(char);
 	char pop();
+	void cpyChar(char * c, byte l);
 	byte available();
 
 };
 
+#include "cpp/CommandHandler.cpp"
 #endif //COMMAND_HANDLLER_H

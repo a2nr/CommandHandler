@@ -5,6 +5,27 @@ typedef struct ts_cmd_cntr	ts_cmd_cntr;
 typedef struct ts_cmd_hdl	ts_cmd_hdl;
 typedef union  un_cmd_data	un_prv_data;
 
+typedef struct _twoByte
+{
+	unsigned char hi;
+	unsigned char lo;
+} twoByte;
+
+typedef struct _sts_bits
+{
+	// unsigned short RFU_lo				: 8;
+	unsigned short data_available : 1;
+	unsigned short OK : 1;
+	unsigned short NOK : 1;
+	unsigned short RFU : 5;
+} sts_bits;
+
+typedef union _s_sr {
+	twoByte byte;
+	sts_bits bits;
+	unsigned short word;
+} stsrsp;
+
 
 struct ts_cmd_hdl {
 
@@ -21,6 +42,7 @@ struct ts_cmd_hdl {
 	void			(*push)				(ts_cmd_hdl * self, const unsigned char *x, unsigned int len);
 	void*			(*getParam)			(ts_cmd_hdl * self);
 	unsigned int 	(*Return) 			(ts_cmd_hdl * self, unsigned char oknok, unsigned char* p);
+	stsrsp * 		(*getStatusResponds)(ts_cmd_hdl * self);
 };
 
 struct ts_cmd_cntr {

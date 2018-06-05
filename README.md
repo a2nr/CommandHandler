@@ -9,4 +9,3 @@ Format is simple. First 5 Byte contain the header
 | **First_Byte** | **CMD_0** | **CMD_1** | **CMD_2** | **Lengt_Paramater** | *Data_Parameter* |
 | -------------- | --------- | --------- | --------- | ------------------- | ---------------- |
 | 1 Byte         | 1 Byte    | 1 Byte    | 1 Byte    | 1 Byte              | n Byte           |
-

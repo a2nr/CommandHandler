@@ -1,6 +1,11 @@
 #ifndef COMMAND_HANDLER_H
 #define COMMAND_HANDLER_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct ts_cmd_cntr	ts_cmd_cntr;
 typedef struct ts_cmd_hdl	ts_cmd_hdl;
 typedef union  un_cmd_data	un_prv_data;
@@ -64,5 +69,7 @@ typedef struct cm_init_ts {
 
 ts_cmd_hdl 	cmNew_Command(cm_init_ts * init );
 
-//#include "cpp/CommandHandler.cpp"
+#ifdef __cplusplus
+}
+#endif
 #endif //COMMAND_HANDLLER_H

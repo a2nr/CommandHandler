@@ -3,11 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "CommandHandler.h"
 
 #ifndef CM_SET_SIZE_BUFF
@@ -245,6 +240,7 @@ extern "C"
 					self->getParam = cmGetParam;
 					self->push = cmPush;
 					i = self->pPrvt->data.sizeCmd;
+					cmFlush(self, 0);
 					STAGE = STAGE_END;
 					break;
 				}
@@ -262,7 +258,3 @@ extern "C"
 			}
 		} while (STAGE != STAGE_END);
 	}
-
-#ifdef __cplusplus
-}
-#endif

@@ -1,1 +1,1 @@
-add_library(CommandHandler CommandHandler.c)
+# add_library(CommandHandler CommandHandler.c)

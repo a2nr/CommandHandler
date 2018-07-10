@@ -1,0 +1,1 @@
+/home/mori3rti/App/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-ar qc libCommandHandler.a  CMakeFiles/CommandHandler.dir/CommandHandler.c.obj

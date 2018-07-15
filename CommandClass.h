@@ -6,7 +6,8 @@
 #define COMMAND_CLASS_MAX_COMMAND 1
 #endif
 
-#define sizeBuff 0xFF + 7
+#define COMMAND_CLASS_SIZE_BUFFER 0xFF + 9
+#define COMMAND_CLASS_MAX_INDEX ((COMMAND_CLASS_SIZE_BUFFER)*COMMAND_CLASS_MAX_COMMAND)
 
 struct sHeader
 {
@@ -50,7 +51,7 @@ typedef union tuSharedBufferCommand_ {
 		tuStsResp sw;
 		tuParam param;
 	} out;
-	unsigned char byte[sizeBuff];
+	unsigned char byte[COMMAND_CLASS_SIZE_BUFFER];
 } tuSharedBufferCommand;
 
 typedef tuSharedBufferCommand *ptrBuffer;
@@ -63,15 +64,13 @@ class user_command;
 template <typename C>
 struct cm_init_class
 {
-	unsigned char (C::*inc)();
-	unsigned char (C::*out)();
+	unsigned char (C::*inc)(CommandHandler<C> *cmd);
+	unsigned char (C::*out)(CommandHandler<C> *cmd);
 	void (C::*err)(unsigned char c);
 
-	user_command<C> *all_user_command;
+	user_command<C> **all_user_command;
 
-	unsigned char fbyte;
 	unsigned char length_user_command;
-	// unsigned char sizeBuf;
 };
 
 template <typename T>
@@ -97,22 +96,28 @@ template <typename T>
 class CommandHandler
 {
   private:
-	//ts_cmd_hdl hdl;
 	unsigned long pos_push;
 	unsigned long pos_pop;
 	ptrBuffer buffer;
-	user_command<T> *ptrUser;
+	user_command<T> **ptrUser;
 	unsigned long lengtUserCmd;
 	T *obj;
-	unsigned char (T::*pIncomming)();
-	unsigned char (T::*pOutgoing)();
+	unsigned char (T::*pIncomming)(CommandHandler<T> *cmd);
+	unsigned char (T::*pOutgoing)(CommandHandler<T> *cmd);
 	void (T::*pError)(unsigned char);
+	void flush(void){
+		pos_push =0 ;
+		pos_pop = 0;
+
+	}
 
   public:
-	CommandHandler(){};
-	CommandHandler(T *o, struct cm_init_class<T> *init);
+	CommandHandler();
+	// CommandHandler(T *o, struct cm_init_class<T> *init);
+	~CommandHandler();
 
-	unsigned char available();
+	void init(T *o, struct cm_init_class<T> *init);
+	unsigned long available();
 	void run();
 	void push(const unsigned char *x, unsigned int len);
 	void *getParam();
@@ -125,8 +130,9 @@ class CommandHandler
 	{
 		return (void *)&this->buffer->in.header;
 	}
-	unsigned char* operator[](unsigned long idx) { return &this->buffer->byte[idx]; }
-	unsigned long operator=(unsigned long length_push) { this->pos_push = length_push; return this->pos_push;}
+	inline unsigned char* operator=(unsigned long length_push) { this->pos_push = length_push; return (unsigned char * )&this->buffer;}
+	inline unsigned char* operator[](unsigned long idx) { return (this->buffer != nullptr) ? &this->buffer->byte[idx] : nullptr; }
+	// unsigned long operator=(unsigned long length_push) { this->pos_push = length_push; return this->pos_push;}
 };
 
 #include "src/CommandClass.cxx"
